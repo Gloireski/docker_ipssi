@@ -1,0 +1,79 @@
+version: '3.9'
+
+services:
+  # Service MongoDB
+  mongo:
+    image: mongo
+    container_name: hacka-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - hacka-net
+
+  # Service Redis
+  redis:
+    image: redis
+    container_name: hacka-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    networks:
+      - hacka-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/rtweet
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - JWT_SECRET=your_jwt_secret_replace_in_production
+      - JWT_EXPIRE=2h
+      - JWT_REFRESH_EXPIRE=7d
+    networks:
+      - hacka-net
+
+  # Service Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+    networks:
+      - hacka-net
+
+networks:
+  hacka-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
