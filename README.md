@@ -19,3 +19,39 @@ Ce projet reprend une application MERN développée en cours, et la déploie **l
 ```bash
 docker network create hacka-net
 ```
+
+### 2️⃣ Base de données (MongoDB)
+
+```bash
+docker run -d --name hacka-mongo --network hacka-net -v mongo-data:/data/db mongo
+```
+
+### 3️⃣ Redis
+```bash
+docker run -d --name hacka-redis --network hacka-net redis
+```
+
+## Backend
+### Builder l'image backend
+``` bash
+docker build -t backend-image ./backend
+```
+### lancement du conteneur
+``` bash
+docker run -d --name backend --network hacka-net -p 5000:5000  backend-image
+```
+
+## frontend
+
+### Build de l'image frontend
+``` bash
+docker build -t frontend-image ./frontend
+```
+
+### Lancer le conteneur frontend
+``` bash
+docker run -d --name frontend --network hacka-net -p 8080:3000 frontend-image
+```
+
+### Accès 
+### Frontend ➝ http://localhost:8080
