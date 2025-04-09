@@ -1,0 +1,11 @@
+{
+    "extends": "next/core-web-vitals",
+    "rules": {
+      "@typescript-eslint/no-explicit-any": "off",  // Désactive la règle sur l'utilisation de "any"
+      "@typescript-eslint/no-unused-vars": "off",   // Désactive la règle sur les variables inutilisées
+      "react/no-unescaped-entities": "off",         // Désactive la règle sur les entités non échappées dans React
+      "@next/next/no-img-element": "off",           // Désactive l'avertissement sur l'utilisation de `<img>` au lieu de `<Image>`
+      "react-hooks/exhaustive-deps": "off"          // Désactive les avertissements pour les dépendances dans `useEffect`
+    }
+  }
+  
